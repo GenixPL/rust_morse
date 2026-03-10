@@ -1,0 +1,3 @@
+match_block_trailing_comma = true
+#trailing_comma = "Always"
+use_small_heuristics = "None"
