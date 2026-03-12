@@ -15,6 +15,8 @@ impl AppRunner {
         loop {
             terminal.draw(|frame| self.render(frame))?;
 
+
+
             // Wait up to 16ms (approx 60fps) for an event
             if poll(Duration::from_millis(16))? {
                 if let Event::Key(key) = read()? {
@@ -33,8 +35,6 @@ impl AppRunner {
                     }
                 }
             }
-
-            thread::sleep(Duration::from_millis(500))
         }
     }
 
