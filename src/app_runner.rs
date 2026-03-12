@@ -20,7 +20,16 @@ impl AppRunner {
                 if let Event::Key(key) = read()? {
                     if key.kind == KeyEventKind::Press {
                         // handle key
-                        println!("{:?}", key)
+                        match key.code.as_char() {
+                            None => {}
+                            Some(char) => {
+                                match char {
+                                    's' => self.app_state.stop(),
+                                    'f' => self.app_state.start(),
+                                    _ => {}
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -44,6 +53,6 @@ impl AppRunner {
         frame.render_widget("Press F to start timer", layout[0]);
         frame.render_widget("Press S to start timer", layout[1]);
         frame.render_widget(format!("Timer state: {}", self.app_state.timer_state), layout[2]);
-        frame.render_widget("Time:", layout[3]);
+        frame.render_widget(format!("Time: {:?}", self.app_state.get_elapsed_time()), layout[3]);
     }
 }
