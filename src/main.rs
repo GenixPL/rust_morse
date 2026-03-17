@@ -1,10 +1,5 @@
-use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::*;
-use crossterm::event::*;
-use std::thread;
-use std::time::Duration;
 use crate::app_runner::AppRunner;
-use crate::app_state::*;
 
 mod app_state;
 mod app_runner;
