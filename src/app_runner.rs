@@ -3,15 +3,21 @@ use crossterm::event::{poll, read, Event, KeyEvent, KeyEventKind};
 use ratatui::{DefaultTerminal, Frame};
 use ratatui::layout::{Constraint, Direction, Layout};
 use crate::app_state::AppState;
-use crate::audio_handler::AudioHandler;
+use crate::audio_handler::audio_handler::*;
 
-#[derive(Default)]
 pub struct AppRunner {
     app_state: AppState,
-    audio_handler: AudioHandler,
+    audio_handler: Box<dyn AudioHandler>,
 }
 
 impl AppRunner {
+    pub fn new(audio_handler: Box<dyn AudioHandler>) -> Self {
+        Self {
+            app_state: Default::default(),
+            audio_handler,
+        }
+    }
+
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> std::io::Result<()> {
         self.audio_handler.init();
 

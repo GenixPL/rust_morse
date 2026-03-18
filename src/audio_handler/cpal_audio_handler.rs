@@ -2,14 +2,15 @@ use std::time::Duration;
 use cpal::{Sample, SampleFormat};
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use crossterm::event::poll;
+use crate::audio_handler::audio_handler::AudioHandler;
 
 #[derive(Default)]
-pub struct AudioHandler {
+pub struct CpalAudioHandler {
     pub stream: Option<cpal::Stream>,
 }
 
-impl AudioHandler {
-    pub fn init(&mut self) {
+impl AudioHandler for CpalAudioHandler {
+    fn init(&mut self) {
         let host = cpal::default_host();
 
         let device = host.default_output_device().expect("no output device available");
@@ -56,13 +57,15 @@ impl AudioHandler {
         };
     }
 
-    pub fn play(&self) {
+    fn play(&self) {
         println!("Audio handler playing");
         println!("{:?}", self.stream.is_some());
         self.stream.as_ref().unwrap().play().expect("TODO: panic message");
         poll(Duration::from_secs(5)).expect("TODO: panic message poll");
     }
+}
 
+impl CpalAudioHandler {
     fn write_silence<T: Sample>(data: &mut [T], _: &cpal::OutputCallbackInfo) {
         for sample in data.iter_mut() {
             *sample = Sample::EQUILIBRIUM;
