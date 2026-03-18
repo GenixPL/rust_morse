@@ -1,7 +1,6 @@
 use std::time::Duration;
 use cpal::{Sample, SampleFormat};
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use crossterm::event::poll;
 use crate::audio_handler::audio_handler::AudioHandler;
 
 #[derive(Default)]
@@ -11,9 +10,12 @@ pub struct CpalAudioHandler {
 
 impl AudioHandler for CpalAudioHandler {
     fn init(&mut self) {
+        println!("Initializing cpal audio handler...");
+
         let host = cpal::default_host();
 
         let device = host.default_output_device().expect("no output device available");
+        println!("Using audio device: {}", device.description().expect("no device available"));
 
         let err_fn = |err| eprintln!("an error occurred on the output audio stream: {}", err);
 
@@ -27,6 +29,7 @@ impl AudioHandler for CpalAudioHandler {
         let sample_format = supported_config.sample_format();
 
         let config = supported_config.into();
+        println!("config: {:?}", config);
 
         self.stream = match sample_format {
             SampleFormat::F32 => device.build_output_stream(
@@ -61,7 +64,7 @@ impl AudioHandler for CpalAudioHandler {
         println!("Audio handler playing");
         println!("{:?}", self.stream.is_some());
         self.stream.as_ref().unwrap().play().expect("TODO: panic message");
-        poll(Duration::from_secs(5)).expect("TODO: panic message poll");
+        std::thread::sleep(Duration::from_secs(5));
     }
 }
 
@@ -69,6 +72,9 @@ impl CpalAudioHandler {
     fn write_silence<T: Sample>(data: &mut [T], _: &cpal::OutputCallbackInfo) {
         for sample in data.iter_mut() {
             *sample = Sample::EQUILIBRIUM;
+            //     match data. {
+            //     SampleFormat::F32 => sound.get_f32(),
+            // };
         }
     }
 }

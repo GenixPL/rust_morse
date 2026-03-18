@@ -20,6 +20,9 @@ impl AppRunner {
 
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> std::io::Result<()> {
         self.audio_handler.init();
+        self.audio_handler.play();
+
+        return Ok(());
 
         loop {
             terminal.draw(|frame| self.render(frame))?;
