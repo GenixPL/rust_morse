@@ -3,6 +3,7 @@ use crate::app_runner::AppRunner;
 
 mod app_state;
 mod app_runner;
+mod audio_handler;
 
 fn main() -> color_eyre::Result<()> {
     let mut app_runner: AppRunner = AppRunner::default();
