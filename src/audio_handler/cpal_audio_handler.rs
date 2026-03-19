@@ -15,7 +15,7 @@ impl AudioHandler for CpalAudioHandler {
         let host = cpal::default_host();
 
         let device = host.default_output_device().expect("no output device available");
-        println!("Using audio device: {}", device.description().expect("no device available"));
+        println!("Using audio device: {}", device.name().expect("no device available"));
 
         let err_fn = |err| eprintln!("an error occurred on the output audio stream: {}", err);
 

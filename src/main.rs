@@ -2,6 +2,8 @@
 
 mod app_state;
 mod app_runner;
+mod audio_recorder;
+
 mod audio_handler {
     pub mod audio_handler;
     pub mod cpal_audio_handler;
@@ -11,10 +13,12 @@ mod audio_handler {
 use ratatui::*;
 use crate::app_runner::AppRunner;
 use crate::audio_handler::rodio_audio_handler::RodioAudioHandler;
+use crate::audio_recorder::libmic_audio_recorder::LibmicAudioRecorder;
 
 fn main() -> color_eyre::Result<()> {
     let mut app_runner: AppRunner = AppRunner::new(
-        Box::new(RodioAudioHandler::default())
+        Box::new(RodioAudioHandler::default()),
+        Box::new(LibmicAudioRecorder::default()),
     );
 
     color_eyre::install()?;

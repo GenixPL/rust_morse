@@ -4,25 +4,29 @@ use ratatui::{DefaultTerminal, Frame};
 use ratatui::layout::{Constraint, Direction, Layout};
 use crate::app_state::AppState;
 use crate::audio_handler::audio_handler::*;
+use crate::audio_recorder::audio_recorder::{AudioRecorder, AudioRecorderState};
 
 pub struct AppRunner {
     app_state: AppState,
     audio_handler: Box<dyn AudioHandler>,
+    audio_recorder: Box<dyn AudioRecorder>,
 }
 
 impl AppRunner {
-    pub fn new(audio_handler: Box<dyn AudioHandler>) -> Self {
+    pub fn new(
+        audio_handler: Box<dyn AudioHandler>,
+        audio_recorder: Box<dyn AudioRecorder>,
+    ) -> Self {
         Self {
             app_state: Default::default(),
             audio_handler,
+            audio_recorder,
         }
     }
 
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> std::io::Result<()> {
         self.audio_handler.init();
-        self.audio_handler.play();
-
-        return Ok(());
+        self.audio_recorder.init();
 
         loop {
             terminal.draw(|frame| self.render(frame))?;
@@ -51,6 +55,7 @@ impl AppRunner {
                         'f' => self.app_state.start(),
                         'q' => self.app_state.quit(),
                         'p' => self.audio_handler.play(),
+                        'r' => self.audio_recorder.record(),
                         _ => {}
                     }
                 }

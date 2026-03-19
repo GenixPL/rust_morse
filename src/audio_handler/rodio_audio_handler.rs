@@ -26,9 +26,5 @@ impl AudioHandler for RodioAudioHandler {
 
         // Play the sound directly on the device
         self.handle.as_ref().unwrap().mixer().add(source);
-
-        // The sound plays in a separate audio thread,
-        // so we need to keep the main thread alive while it's playing.
-        std::thread::sleep(std::time::Duration::from_secs(5));
     }
 }
