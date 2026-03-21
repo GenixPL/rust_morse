@@ -7,10 +7,11 @@ edition = "2024"
 color-eyre = "0.6.3"
 ratatui = "0.30.0"
 crossterm = "0.29.0"
-strum_macros = "0.27.2"
-cpal = "0.15"
+strum_macros = "0.28.0"
+cpal = "0.15.3"
 rodio = "0.22.2"
-libmic-rs = "0.1.0"
+audio-recorder-rs = {git = "https://github.com/mappa-ai/audio-recorder-rs.git", branch = "main", commit = "aeecd8a"}
+hound = "3.5.1"
 
 [[bin]]
 name = "rust_tutorials"
