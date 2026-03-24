@@ -1,21 +1,23 @@
+use std::sync::mpsc::Sender;
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind};
 
 
 pub struct TextHandler {
     input: String,
-    on_enter_callback: Box<dyn Fn(String)>,
+    on_enter_callback: Sender<String>,
+
 }
 
 impl TextHandler {
-    pub fn new(on_enter_callback: Box<dyn Fn(String)>) -> Self {
+    pub fn new(sender: Sender<String>) -> Self {
         Self {
             input: "".to_string(),
-            on_enter_callback,
+            on_enter_callback: sender,
         }
     }
 
-    pub fn get_input_state(&self) -> String {
-        self.input.clone()
+    pub fn get_input_state(&self) -> &str {
+        self.input.as_str()
     }
 
     pub fn handle_key(&mut self, key_event: KeyEvent) {
@@ -29,7 +31,7 @@ impl TextHandler {
         }
 
         if key_event.code == KeyCode::Enter {
-            (self.on_enter_callback)(self.input.clone());
+            let _ = self.on_enter_callback.send(self.input.clone());
             self.input.clear();
             return;
         }
