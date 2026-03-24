@@ -22,6 +22,10 @@ impl Default for Timer {
 }
 
 impl Timer {
+    pub fn get_state(&self) -> &TimerState {
+        &self.state
+    }
+
     pub fn start(&mut self) {
         self.state = TimerState::Running;
         self.last_start_at_millis = Some(Instant::now());

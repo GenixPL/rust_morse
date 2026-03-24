@@ -1,5 +1,5 @@
 use crate::features::feature::Feature;
-use crate::timer::timer::Timer;
+use crate::timer::timer::{Timer};
 
 #[derive(Default)]
 pub struct TimerFeature {
@@ -9,6 +9,10 @@ pub struct TimerFeature {
 impl Feature for TimerFeature {
     fn get_name(&self) -> &'static str {
         "Timer"
+    }
+
+    fn get_command(&self) -> &'static str {
+        "t"
     }
 
     fn handle_text(&mut self, text: String) {
@@ -21,10 +25,12 @@ impl Feature for TimerFeature {
         }
     }
 
-    fn print(&self) -> Vec<&str> {
+    fn print(&self) -> Vec<String> {
         vec![
-            "Press <f> to start.",
-            "Press <s> to stop.",
+            format!("State: {}", self.timer.get_state()),
+            format!("Time: {:?}", self.timer.get_elapsed_time()),
+            "Press <f> to start.".to_string(),
+            "Press <s> to stop.".to_string(),
         ]
     }
 }
