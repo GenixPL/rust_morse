@@ -3,6 +3,7 @@
 mod app_state;
 mod app_runner;
 mod audio_recorder;
+mod text_handler;
 
 mod audio_handler {
     pub mod audio_handler;

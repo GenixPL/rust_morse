@@ -1,3 +1,4 @@
+use std::fmt::format;
 use std::time::Duration;
 use crossterm::event::{poll, read, Event, KeyEvent, KeyEventKind};
 use ratatui::{DefaultTerminal, Frame};
@@ -5,11 +6,13 @@ use ratatui::layout::{Constraint, Direction, Layout};
 use crate::app_state::AppState;
 use crate::audio_handler::audio_handler::*;
 use crate::audio_recorder::audio_recorder::{AudioRecorder, AudioRecorderState};
+use crate::text_handler::text_handler::TextHandler;
 
 pub struct AppRunner {
     app_state: AppState,
     audio_handler: Box<dyn AudioHandler>,
     audio_recorder: Box<dyn AudioRecorder>,
+    text_handler: TextHandler,
 }
 
 impl AppRunner {
@@ -21,6 +24,13 @@ impl AppRunner {
             app_state: Default::default(),
             audio_handler,
             audio_recorder,
+            text_handler: TextHandler::new(
+                Box::new(
+                    |input| {
+
+                    }
+                ),
+            ),
         }
     }
 
@@ -45,22 +55,7 @@ impl AppRunner {
     }
 
     fn input_handler(&mut self, key_event: KeyEvent) {
-        if key_event.kind == KeyEventKind::Press {
-            // handle key
-            match key_event.code.as_char() {
-                None => {}
-                Some(char) => {
-                    match char {
-                        's' => self.app_state.stop(),
-                        'f' => self.app_state.start(),
-                        'q' => self.app_state.quit(),
-                        'p' => self.audio_handler.play(),
-                        'r' => self.audio_recorder.record(),
-                        _ => {}
-                    }
-                }
-            }
-        }
+        self.text_handler.handle_key(key_event);
     }
 
     fn render(&self, frame: &mut Frame) {
@@ -71,13 +66,17 @@ impl AppRunner {
                 Constraint::Length(1),
                 Constraint::Length(1),
                 Constraint::Length(1),
+                Constraint::Length(1),
+                Constraint::Length(1),
             ])
             .split(frame.area());
 
 
-        frame.render_widget("Press <F> to start timer", layout[0]);
-        frame.render_widget("Press <S> to start timer", layout[1]);
-        frame.render_widget(format!("Timer state: {}", self.app_state.timer_state), layout[2]);
-        frame.render_widget(format!("Time: {:?}", self.app_state.get_elapsed_time()), layout[3]);
+        frame.render_widget("", layout[0]);
+        frame.render_widget(format!("Input: {}", self.text_handler.get_input_state()), layout[1]);
+        frame.render_widget("Press <F> to start timer", layout[2]);
+        frame.render_widget("Press <S> to start timer", layout[3]);
+        frame.render_widget(format!("Timer state: {}", self.app_state.timer_state), layout[4]);
+        frame.render_widget(format!("Time: {:?}", self.app_state.get_elapsed_time()), layout[5]);
     }
 }
