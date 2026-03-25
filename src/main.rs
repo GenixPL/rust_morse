@@ -5,6 +5,7 @@ mod audio_recorder;
 mod text_handler;
 mod features;
 mod timer;
+mod morse_generator;
 
 mod audio_handler {
     pub mod audio_handler;
@@ -12,6 +13,8 @@ mod audio_handler {
     pub mod rodio_audio_handler;
 }
 
+use std::cell::RefCell;
+use std::rc::Rc;
 use ratatui::*;
 use crate::app_runner::AppRunner;
 use crate::audio_handler::rodio_audio_handler::RodioAudioHandler;
@@ -19,7 +22,7 @@ use crate::audio_recorder::audio_recorder_audio_recorder::AudioRecorderAudioReco
 
 fn main() -> color_eyre::Result<()> {
     let mut app_runner: AppRunner = AppRunner::new(
-        Box::new(RodioAudioHandler::default()),
+        Rc::new(RefCell::new(RodioAudioHandler::default())),
         Box::new(AudioRecorderAudioRecorder::default()),
     );
 
@@ -27,6 +30,8 @@ fn main() -> color_eyre::Result<()> {
     run(|terminal| app_runner.run(terminal))?;
     Ok(())
 }
+
+
 
 
 

@@ -60,7 +60,7 @@ impl AudioHandler for CpalAudioHandler {
         };
     }
 
-    fn play(&self) {
+    fn play(&self, file_path: &str) {
         println!("Audio handler playing");
         println!("{:?}", self.stream.is_some());
         self.stream.as_ref().unwrap().play().expect("TODO: panic message");

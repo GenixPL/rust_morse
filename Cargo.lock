@@ -1170,6 +1170,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "morsify"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6ae086a18061c78bcc4bdd8ee3888a63b11039723386503beb7bdac53dd26b9d"
+
+[[package]]
 name = "ndk"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1920,6 +1926,7 @@ dependencies = [
  "cpal 0.15.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "crossterm",
  "hound",
+ "morsify",
  "ratatui",
  "rodio",
  "strum_macros 0.28.0",

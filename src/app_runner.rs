@@ -5,17 +5,17 @@ use std::sync::mpsc::Receiver;
 use std::time::Duration;
 use crossterm::event::{poll, read, Event, KeyCode};
 use ratatui::{DefaultTerminal, Frame};
-use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::prelude::Line;
 use ratatui::widgets::{Block, Borders, Paragraph};
 use crate::audio_handler::audio_handler::*;
 use crate::audio_recorder::audio_recorder::{AudioRecorder};
+use crate::features::encode_morse_feature::EncodeMorseFeature;
 use crate::features::feature::Feature;
 use crate::features::timer_feature::TimerFeature;
 use crate::text_handler::text_handler::TextHandler;
 
 pub struct AppRunner {
-    audio_handler: Box<dyn AudioHandler>,
+    audio_handler: Rc<RefCell<dyn AudioHandler>>,
     audio_recorder: Box<dyn AudioRecorder>,
 
     text_receiver: Receiver<String>,
@@ -26,26 +26,26 @@ pub struct AppRunner {
 
 impl AppRunner {
     pub fn new(
-        audio_handler: Box<dyn AudioHandler>,
+        audio_handler: Rc<RefCell<dyn AudioHandler>>,
         audio_recorder: Box<dyn AudioRecorder>,
     ) -> Self {
         let (tx, rx) = std::sync::mpsc::channel();
 
         Self {
-            audio_handler,
+            audio_handler: audio_handler.clone(),
             audio_recorder,
             text_receiver: rx,
             text_handler: TextHandler::new(tx),
             active_feature: None,
             features: vec![
-                Rc::new(RefCell::new(TimerFeature::default()))
-                // Box::new(),
+                Rc::new(RefCell::new(TimerFeature::default())),
+                Rc::new(RefCell::new(EncodeMorseFeature::new(audio_handler.clone()))),
             ],
         }
     }
 
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> std::io::Result<()> {
-        self.audio_handler.init();
+        self.audio_handler.borrow_mut().init();
         self.audio_recorder.init();
 
         loop {
@@ -75,7 +75,7 @@ impl AppRunner {
                     } else {
                         for feature in self.features.iter() {
                             if input == feature.borrow().get_command() {
-                                self.active_feature = Some(self.features[0].clone());
+                                self.active_feature = Some(feature.clone());
                                 break;
                             }
                         }

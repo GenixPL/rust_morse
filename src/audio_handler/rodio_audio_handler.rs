@@ -4,7 +4,7 @@ use crate::audio_handler::audio_handler::AudioHandler;
 
 #[derive(Default)]
 pub struct RodioAudioHandler {
-    handle: Option<MixerDeviceSink>
+    handle: Option<MixerDeviceSink>,
 }
 
 impl AudioHandler for RodioAudioHandler {
@@ -17,9 +17,11 @@ impl AudioHandler for RodioAudioHandler {
         let player = Player::connect_new(self.handle.as_ref().unwrap().mixer());
     }
 
-    fn play(&self) {
+    fn play(&self, file_path: &str) {
         // Load a sound from a file, using a path relative to Cargo.toml
-        let file = File::open("examples/crystal_bloom.mp3").unwrap();
+        let file = File::open(
+            file_path /* "examples/crystal_bloom.mp3" */
+        ).unwrap();
 
         // Decode that sound file into a source
         let source = Decoder::try_from(file).unwrap();
