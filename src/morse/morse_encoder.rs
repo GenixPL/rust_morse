@@ -1,7 +1,7 @@
 use hound::WavWriter;
 use morsify::{MorseCharacterSet, MorseCode, Options};
 
-pub fn generate_morse(input: &str, file_path: &str) -> Result<(), String> {
+pub fn morse_encode(input: &str, file_path: &str) -> Result<(), String> {
     let spec = hound::WavSpec {
         channels: 1,
         sample_rate: 44100,

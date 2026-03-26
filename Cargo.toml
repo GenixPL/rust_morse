@@ -13,6 +13,7 @@ rodio = "0.22.2"
 audio-recorder-rs = {git = "https://github.com/mappa-ai/audio-recorder-rs.git", branch = "main", commit = "aeecd8a"}
 hound = "3.5.1"
 morsify = "0.2.0"
+statrs = "0.18.0"
 
 [[bin]]
 name = "rust_tutorials"

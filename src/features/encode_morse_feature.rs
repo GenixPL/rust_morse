@@ -2,7 +2,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use crate::audio_handler::audio_handler::AudioHandler;
 use crate::features::feature::Feature;
-use crate::morse_generator::morse_generator::generate_morse;
+use crate::morse::morse_encoder::morse_encode;
 
 pub struct EncodeMorseFeature {
     audio_handler: Rc<RefCell<dyn AudioHandler>>,
@@ -27,7 +27,7 @@ impl Feature for EncodeMorseFeature {
 
     fn handle_text(&mut self, text: String) {
         let file_path = "recordings/working_morse_encode.wav";
-        generate_morse(text.as_str(), file_path).unwrap();
+        morse_encode(text.as_str(), file_path).unwrap();
         self.audio_handler.borrow().play(file_path)
     }
 
