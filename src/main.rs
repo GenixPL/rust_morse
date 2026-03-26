@@ -22,15 +22,15 @@ use crate::audio_recorder::audio_recorder_audio_recorder::AudioRecorderAudioReco
 use crate::morse::morse_decoder::morse_decode;
 
 fn main() -> color_eyre::Result<()> {
-    morse_decode("recordings/working_morse_encode.wav");
+    // morse_decode("recordings/working_morse_encode.wav");
     
-    // let mut app_runner: AppRunner = AppRunner::new(
-    //     Rc::new(RefCell::new(RodioAudioHandler::default())),
-    //     Box::new(AudioRecorderAudioRecorder::default()),
-    // );
-    //
-    // color_eyre::install()?;
-    // run(|terminal| app_runner.run(terminal))?;
+    let mut app_runner: AppRunner = AppRunner::new(
+        Rc::new(RefCell::new(RodioAudioHandler::default())),
+        Box::new(AudioRecorderAudioRecorder::default()),
+    );
+
+    color_eyre::install()?;
+    run(|terminal| app_runner.run(terminal))?;
     Ok(())
 }
 
