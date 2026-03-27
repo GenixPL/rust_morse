@@ -23,7 +23,8 @@ use crate::morse::morse_decoder::morse_decode;
 
 fn main() -> color_eyre::Result<()> {
     // morse_decode("recordings/working_morse_encode.wav");
-    
+    // return Ok(());
+
     let mut app_runner: AppRunner = AppRunner::new(
         Rc::new(RefCell::new(RodioAudioHandler::default())),
         Box::new(AudioRecorderAudioRecorder::default()),

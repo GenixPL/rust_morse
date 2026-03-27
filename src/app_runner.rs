@@ -9,6 +9,7 @@ use ratatui::prelude::Line;
 use ratatui::widgets::{Block, Borders, Paragraph};
 use crate::audio_handler::audio_handler::*;
 use crate::audio_recorder::audio_recorder::{AudioRecorder};
+use crate::features::decode_morse_feature::DecodedMorseFeature;
 use crate::features::encode_morse_feature::EncodeMorseFeature;
 use crate::features::feature::Feature;
 use crate::features::timer_feature::TimerFeature;
@@ -40,6 +41,7 @@ impl AppRunner {
             features: vec![
                 Rc::new(RefCell::new(TimerFeature::default())),
                 Rc::new(RefCell::new(EncodeMorseFeature::new(audio_handler.clone()))),
+                Rc::new(RefCell::new(DecodedMorseFeature::default())),
             ],
         }
     }

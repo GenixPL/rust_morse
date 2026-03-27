@@ -1,8 +1,15 @@
 use std::collections::HashSet;
+use morsify::{MorseCharacterSet, MorseCode, Options};
 use statrs::statistics::Statistics;
 
 pub fn morse_decode(file_path: &str) -> String {
-    let mut reader = hound::WavReader::open(file_path).unwrap();
+    let mut reader_res = hound::WavReader::open(file_path);
+    let mut reader = match reader_res {
+        Ok(reader) => reader,
+        Err(_) => {
+            panic!("Error opening file: {}", file_path);
+        }
+    };
     let spec = reader.spec();
 
     let samples: Vec<f32> = reader.samples::<i16>().
@@ -19,6 +26,8 @@ pub fn morse_decode(file_path: &str) -> String {
     // sample below this value is interpreted as silence
     let silence_threshold = 0.0;
 
+    let mut decoded: String = "".to_string();
+
     let mut chunk_lengths: Vec<u32> = vec![];
     let mut chunk_length: u32 = 1;
     let mut chunk_silence: bool = samples[0] <= silence_threshold;
@@ -32,6 +41,7 @@ pub fn morse_decode(file_path: &str) -> String {
             // one - off (the samples might have singular values
             // that belong to the other category).
             if sample_silence != (samples[i + 1] <= silence_threshold) {
+                // println!("off at {}", i);
                 // If it's different - one-off, then mark it the same as chunk's.
                 sample_silence = chunk_silence
             }
@@ -42,30 +52,57 @@ pub fn morse_decode(file_path: &str) -> String {
         } else {
             // println!("len: {}, silence: {}", chunk_length, chunk_silence);
 
+            if chunk_length < 4000 {
+                // Nothing
+            } else if chunk_length < 13_000 {
+                if chunk_silence {
+                    //
+                } else {
+                    decoded.push('.');
+                }
+            } else if chunk_length < 30000 {
+                if chunk_silence {
+                    decoded.push(' ');
+                } else {
+                    decoded.push('-');
+                }
+            } else {
+                decoded.push('/');
+            }
+
+            // println!("len: {}", chunk_length);
+            // println!("sil: {}", chunk_silence);
+
             chunk_lengths.push(chunk_length);
             chunk_silence = sample_silence;
             chunk_length = 1;
         }
     }
 
-    let chunk_sizes = chunk_lengths.into_iter().collect::<HashSet<_>>();
-
-    println!("{:?}", chunk_sizes);
+    // println!("{:?}", chunk_lengths);
+    println!("decoded: {}", decoded);
     // println!("{:?}", &samples[60..=65]);
 
-    "dupa".to_string()
+    // "dupa".to_string()
+    from_morse(decoded.as_str())
 }
 
-fn median(mut list: Vec<u32>) -> u32 {
-    // 1. Arrays must be sorted to find the median
-    list.sort();
-
-    let mid = list.len() / 2;
-    let median = if list.len() % 2 == 0 {
-        (list[mid - 1] + list[mid]) / 2
-    } else {
-        list[mid]
+fn from_morse(input: &str) -> String {
+    let options = Options {
+        dash: '-',
+        dot: '.',
+        space: '/',
+        separator: ' ',
+        character_set_order: vec![
+            MorseCharacterSet::Latin,
+            MorseCharacterSet::Numbers,
+            MorseCharacterSet::Punctuation,
+            MorseCharacterSet::Greek,
+        ],
     };
 
-    median
+    let morse_code = MorseCode::new(options);
+
+    // Encode a text message to Morse code
+    morse_code.decode(input)
 }
